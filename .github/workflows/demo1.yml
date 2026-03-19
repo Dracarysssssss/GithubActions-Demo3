@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-        - master
-        - 'feature/*'
+      - master
+      - 'feature/*'
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Output event data
@@ -21,7 +21,26 @@ jobs:
         run: npm ci
       - name: Test code
         run: npm run test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: dist
       - name: Build code
         run: npm run build
+
+  Deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy project
         run: echo "Deploying..."
