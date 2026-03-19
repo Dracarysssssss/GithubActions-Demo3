@@ -30,13 +30,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Install dependencies
         run: npm ci
+      - name: Build code
+        run: npm run build
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: build
           path: dist
-      - name: Build code
-        run: npm run build
 
   Deploy:
     needs: build
